@@ -8,12 +8,21 @@ import (
 )
 
 type repository struct {
-	DB     *gorm.DB
-	APIKey string
+	DB              *gorm.DB
+	MailjetURL      string
+	MailjetUsername string
+	MailjetPassword string
+	MailjetSender   string
 }
 
-func NewRepository(db *gorm.DB, apiKey string) *repository {
-	return &repository{DB: db, APIKey: apiKey}
+func NewRepository(db *gorm.DB, mailjetURL, mailjetUsername, mailjetPassword, mailjetSender string) *repository {
+	return &repository{
+		DB:              db,
+		MailjetURL:      mailjetURL,
+		MailjetUsername: mailjetUsername,
+		MailjetPassword: mailjetPassword,
+		MailjetSender:   mailjetSender,
+	}
 }
 
 func (r *repository) CreateUser(user service.User) (service.User, error) {
@@ -22,10 +31,10 @@ func (r *repository) CreateUser(user service.User) (service.User, error) {
 		Email:    user.Email,
 		Password: user.Password,
 	}
-	
+
 	if err := r.DB.Create(&u).Error; err != nil {
 		return service.User{}, fmt.Errorf("repo.CreateUser: %w", err)
 	}
-	
+
 	return user, nil
 }

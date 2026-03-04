@@ -31,8 +31,11 @@ func main() {
 	dsn := os.Getenv("DSN")
 	port := os.Getenv("PORT")
 	jwtSecret := os.Getenv("JWT_SECRET")
-	apiKey := os.Getenv("JWT_SECRET")
-	if dsn == "" || port == "" || jwtSecret == "" || apiKey == "" {
+	mailjetURL := os.Getenv("MAILJET_URL")
+	mailjetUsername := os.Getenv("MAILJET_BASIC_AUTH_USERNAME")
+	mailjetPassword := os.Getenv("MAILJET_BASIC_AUTH_PASSWORD")
+	mailjetSender := os.Getenv("MAILJET_SENDER")
+	if dsn == "" || port == "" || jwtSecret == "" || mailjetURL == "" || mailjetUsername == "" || mailjetPassword == "" || mailjetSender == "" {
 		log.Fatalln("env variable missing.")
 	}
 
@@ -58,7 +61,7 @@ func main() {
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
 
-	repo := repository.NewRepository(db, apiKey)
+	repo := repository.NewRepository(db, mailjetURL, mailjetUsername, mailjetPassword, mailjetSender)
 	svc := service.NewService(repo, []byte(jwtSecret))
 	h := handler.NewHandler(svc, validate)
 
