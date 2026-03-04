@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/airlangga-hub/library/service"
 	"gorm.io/gorm"
@@ -77,9 +78,59 @@ func (r *repository) GetRents(userID int) ([]service.Rent, error) {
 			BookDescription: r.Book.Description,
 			BookAuthor:      r.Book.Author.FullName,
 			BookCategory:    r.Book.Category.Name,
-			RentDate:        r.RentDate,
+			RentDate:        r.CreatedAt,
 		}
 	}
-	
+
 	return rrents, nil
+}
+
+func (r *repository) CreateRent(userID, bookID int, createdAt, returnDate time.Time) (service.Rent, error) {
+	rent := Rent{
+		BookID:     bookID,
+		UserID:     userID,
+		CreatedAt:  createdAt,
+		ReturnDate: returnDate,
+	}
+
+	err := r.DB.Transaction(func(tx *gorm.DB) error {
+
+		res := tx.Model(&Book{}).
+			Where("id = ? AND available = true", bookID).
+			Update("available", false)
+
+		if err := res.Error; err != nil {
+			return err
+		}
+		if res.RowsAffected == 0 {
+			return gorm.ErrRecordNotFound
+		}
+
+		err := tx.Create(&rent).Error
+		if err != nil {
+			return err
+		}
+
+		err = r.DB.
+			Where("id = ?", rent.ID).
+			Joins("Book").
+			Joins("Book.Author").
+			Joins("Book.Category").
+			First(&rent).
+			Error
+
+		return err
+	})
+
+	if err != nil {
+		return service.Rent{}, fmt.Errorf("repo.CreateRent: %w", err)
+	}
+
+	return service.Rent{
+		BookTitle:       rent.Book.Title,
+		BookDescription: rent.Book.Description,
+		BookAuthor:      rent.Book.Author.FullName,
+		BookCategory:    rent.Book.Category.Name,
+		RentDate:        rent.CreatedAt,
+	}, nil
 }

@@ -30,12 +30,13 @@ type Book struct {
 }
 
 type Rent struct {
-	ID       int       `gorm:"primaryKey"`
-	BookID   int       `gorm:"index"`
-	Book     Book      `gorm:"foreignKey:BookID"`
-	UserID   int       `gorm:"index"`
-	User     User      `gorm:"foreignKey:UserID"`
-	RentDate time.Time `gorm:"type:date"`
+	ID         int       `gorm:"primaryKey"`
+	BookID     int       `gorm:"index"`
+	Book       Book      `gorm:"foreignKey:BookID"`
+	UserID     int       `gorm:"index"`
+	User       User      `gorm:"foreignKey:UserID"`
+	CreatedAt  time.Time
+	ReturnDate time.Time
 }
 
 type MailjetRequest struct {

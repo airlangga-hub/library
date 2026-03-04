@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/airlangga-hub/library/helper"
 	"golang.org/x/crypto/bcrypt"
@@ -51,16 +52,16 @@ func (s *service) Login(email, password string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("service.Login: %w", err)
 	}
-	
+
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return "", fmt.Errorf("service.Login: %w", err)
 	}
-	
+
 	token, err := helper.MakeJWT(user.ID, email, s.JWTSecret)
 	if err != nil {
 		return "", fmt.Errorf("service.Login: %w", err)
 	}
-	
+
 	return token, nil
 }
 
@@ -70,4 +71,15 @@ func (s *service) GetRents(userID int) ([]Rent, error) {
 		return nil, fmt.Errorf("service.GetRents: %w", err)
 	}
 	return rents, nil
+}
+
+func (s *service) RentBook(userID, bookID, duration int) (Rent, error) {
+	createdAt := time.Now()
+	returnDate := createdAt.Add(24 * time.Hour * time.Duration(duration))
+
+	rent, err := s.Repo.CreateRent(userID, bookID, createdAt, returnDate)
+	if err != nil {
+		return Rent{}, fmt.Errorf("service.RentBook: %w", err)
+	}
+	return rent, nil
 }

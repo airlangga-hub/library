@@ -90,3 +90,44 @@ func (h *handler) GetRents(c *echo.Context) error {
 		Data:    rents,
 	})
 }
+
+func (h *handler) RentBook(c *echo.Context) error {
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	claims, ok := token.Claims.(*helper.MyClaims)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	var payload RentBookRequest
+	if err := c.Bind(&payload); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").Wrap(err)
+	}
+
+	if err := h.Validate.Struct(payload); err != nil {
+		if ve, ok := err.(validator.ValidationErrors); ok {
+			for _, e := range ve {
+				if e.Field() == "Duration" && e.Tag() == "lt" {
+					return echo.NewHTTPError(http.StatusBadRequest, "rent duration maximum 14 days").Wrap(e)
+				}
+			}
+		}
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").Wrap(err)
+	}
+
+	rent, err := h.Svc.RentBook(claims.UserID, payload.BookID, payload.Duration)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "book unavailable for now").Wrap(err)
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, "rent book failed").Wrap(err)
+	}
+
+	return c.JSON(http.StatusCreated, Response{
+		Message: http.StatusText(http.StatusCreated),
+		Data:    rent,
+	})
+}
