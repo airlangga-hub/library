@@ -60,9 +60,10 @@ func main() {
 	}
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	repo := repository.NewRepository(db, mailjetURL, mailjetUsername, mailjetPassword, mailjetSender)
-	svc := service.NewService(repo, []byte(jwtSecret))
+	svc := service.NewService(repo, []byte(jwtSecret), logger)
 	h := handler.NewHandler(svc, validate)
 
 	config := echojwt.Config{
@@ -73,7 +74,6 @@ func main() {
 	}
 
 	e := echo.New()
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus:   true,
 		LogMethod:   true,

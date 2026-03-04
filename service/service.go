@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log/slog"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -9,10 +10,15 @@ import (
 type service struct {
 	Repo      Repository
 	JWTSecret []byte
+	Logger    *slog.Logger
 }
 
-func NewService(repo Repository, jwtSecret []byte) *service {
-	return &service{Repo: repo, JWTSecret: jwtSecret}
+func NewService(repo Repository, jwtSecret []byte, logger *slog.Logger) *service {
+	return &service{
+		Repo:      repo,
+		JWTSecret: jwtSecret,
+		Logger:    logger,
+	}
 }
 
 func (s *service) Register(user User) (User, error) {
@@ -30,7 +36,11 @@ func (s *service) Register(user User) (User, error) {
 
 	textPart := fmt.Sprintf("Hi %s!\n\nThanks for registering to Library FTGO 14!\nWe hope you're doing well!\n\nBest regards,\nLibraryFTGO 14", user.FullName)
 
-	go s.Repo.SendEmail(user.Email, "Register Success", textPart)
+	go func() {
+		if err := s.Repo.SendEmail(user.Email, "Register Success", textPart); err != nil {
+			slog.Error("Send Email Failed!!!")
+		}
+	}()
 
 	return user, nil
 }

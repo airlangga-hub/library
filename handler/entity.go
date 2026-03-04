@@ -1,7 +1,12 @@
 package handler
 
+type Response struct {
+	Message string `json:"message"`
+	Data    any    `json:"data"`
+}
+
 type RegisterRequest struct {
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	FullName string `json:"full_name" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
