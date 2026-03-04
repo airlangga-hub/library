@@ -63,3 +63,11 @@ func (s *service) Login(email, password string) (string, error) {
 	
 	return token, nil
 }
+
+func (s *service) GetRents(userID int) ([]Rent, error) {
+	rents, err := s.Repo.GetRents(userID)
+	if err != nil {
+		return nil, fmt.Errorf("service.GetRents: %w", err)
+	}
+	return rents, nil
+}

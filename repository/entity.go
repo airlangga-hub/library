@@ -1,5 +1,7 @@
 package repository
 
+import "time"
+
 type User struct {
 	ID       int    `gorm:"primaryKey"`
 	FullName string `gorm:"not null"`
@@ -28,11 +30,12 @@ type Book struct {
 }
 
 type Rent struct {
-	ID     int  `gorm:"primaryKey"`
-	BookID int  `gorm:"index"`
-	Book   Book `gorm:"foreignKey:BookID"`
-	UserID int  `gorm:"index"`
-	User   User `gorm:"foreignKey:UserID"`
+	ID       int       `gorm:"primaryKey"`
+	BookID   int       `gorm:"index"`
+	Book     Book      `gorm:"foreignKey:BookID"`
+	UserID   int       `gorm:"index"`
+	User     User      `gorm:"foreignKey:UserID"`
+	RentDate time.Time `gorm:"type:date"`
 }
 
 type MailjetRequest struct {

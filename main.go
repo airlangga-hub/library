@@ -109,12 +109,17 @@ func main() {
 	users.POST("/register", h.Register)
 	users.POST("/login", h.Login)
 	// users private endpoints
-	users.POST("/topup", h.TopUp, echojwt.WithConfig(config))
-	users.GET("/rents", h.GetRents)
+	users.GET("/rent", h.GetRents, echojwt.WithConfig(config))
 
 	// books
 	books := e.Group("/books", echojwt.WithConfig(config))
 	books.POST("/rent", h.RentBook)
+	books.GET("", h.GetBooks)
+	
+	// admin
+	admin := e.Group("/admin", echojwt.WithConfig(config))
+	admin.GET("/rent", h.GetRents)
+	admin.GET("/authors", h.GetAuthors)
 
 	// graceful shutdown
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
