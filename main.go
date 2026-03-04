@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/airlangga-hub/library/handler"
 	"github.com/airlangga-hub/library/repository"
 	"github.com/airlangga-hub/library/service"
 	"github.com/go-playground/validator/v10"
