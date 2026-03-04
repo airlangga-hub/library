@@ -23,7 +23,7 @@ func (s *service) Register(user User) (User, error) {
 	
 	user.Password = string(hashedPassword)
 	
-	user, err = s.Repo.Register(user)
+	user, err = s.Repo.CreateUser(user)
 	if err != nil {
 		return User{}, fmt.Errorf("service.Register: %w", err)
 	}

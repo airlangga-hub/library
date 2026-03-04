@@ -16,7 +16,7 @@ func NewRepository(db *gorm.DB, apiKey string) *repository {
 	return &repository{DB: db, APIKey: apiKey}
 }
 
-func (r *repository) Register(user service.User) (service.User, error) {
+func (r *repository) CreateUser(user service.User) (service.User, error) {
 	u := User{
 		FullName: user.FullName,
 		Email:    user.Email,
@@ -24,7 +24,7 @@ func (r *repository) Register(user service.User) (service.User, error) {
 	}
 	
 	if err := r.DB.Create(&u).Error; err != nil {
-		return service.User{}, fmt.Errorf("repo.Register: %w", err)
+		return service.User{}, fmt.Errorf("repo.CreateUser: %w", err)
 	}
 	
 	return user, nil
