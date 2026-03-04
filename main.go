@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/airlangga-hub/library/repository"
+	"github.com/airlangga-hub/library/service"
 	"github.com/go-playground/validator/v10"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
