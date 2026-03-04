@@ -7,7 +7,7 @@ type User struct {
 	Balance  int
 	Author   bool
 	Books    []Book `gorm:"foreignKey:AuthorID"`
-	Loans    []Loan `gorm:"foreignKey:UserID"`
+	Rents    []Rent `gorm:"foreignKey:UserID"`
 }
 
 type Category struct {
@@ -28,7 +28,7 @@ type Book struct {
 	Available   bool
 }
 
-type Loan struct {
+type Rent struct {
 	ID     int  `gorm:"primaryKey"`
 	BookID int  `gorm:"index"`
 	Book   Book `gorm:"foreignKey:BookID"`
