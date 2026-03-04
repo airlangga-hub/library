@@ -2,30 +2,30 @@ package repository
 
 type User struct {
 	ID       int    `gorm:"primaryKey"`
-	Email    string `gorm:"index"`
-	Password string
-	Balance  int
-	Author   bool
+	Email    string `gorm:"index;not null"`
+	Password string `gorm:"not null"`
+	Balance  int    `gorm:"not null;default:0"`
+	Author   bool   `gorm:"default:false"`
 	Books    []Book `gorm:"foreignKey:AuthorID"`
 	Rents    []Rent `gorm:"foreignKey:UserID"`
 }
 
 type Category struct {
-	ID    int `gorm:"primaryKey"`
-	Name  string
+	ID    int    `gorm:"primaryKey"`
+	Name  string `gorm:"not null"`
 	Books []Book `gorm:"foreignKey:CategoryID"`
 }
 
 type Book struct {
-	ID          int `gorm:"primaryKey"`
-	Title       string
-	Description string
+	ID          int      `gorm:"primaryKey"`
+	Title       string   `gorm:"not null"`
+	Description string   `gorm:"not null"`
 	AuthorID    int      `gorm:"index"`
 	Author      User     `gorm:"foreignKey:AuthorID"`
 	CategoryID  int      `gorm:"index"`
 	Category    Category `gorm:"foreignKey:CategoryID"`
-	Deposit     int
-	Available   bool
+	Deposit     int      `gorm:"not null"`
+	Available   bool     `gorm:"default:true"`
 }
 
 type Rent struct {
