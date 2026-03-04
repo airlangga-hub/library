@@ -5,7 +5,6 @@ type User struct {
 	FullName string `gorm:"not null"`
 	Email    string `gorm:"index;not null"`
 	Password string `gorm:"not null"`
-	Balance  int    `gorm:"not null;default:0"`
 	Author   bool   `gorm:"not null;default:false"`
 	Books    []Book `gorm:"foreignKey:AuthorID"`
 	Rents    []Rent `gorm:"foreignKey:UserID"`
@@ -25,7 +24,6 @@ type Book struct {
 	Author      User     `gorm:"foreignKey:AuthorID"`
 	CategoryID  int      `gorm:"index"`
 	Category    Category `gorm:"foreignKey:CategoryID"`
-	Deposit     int      `gorm:"not null"`
 	Available   bool     `gorm:"not null;default:true"`
 }
 
