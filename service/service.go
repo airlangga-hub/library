@@ -38,7 +38,7 @@ func (s *service) Register(user User) (User, error) {
 
 	go func() {
 		if err := s.Repo.SendEmail(user.Email, "Register Success", textPart); err != nil {
-			slog.Error("Send Email Failed!!!")
+			slog.Error("Send Email Failed!!!", slog.Any("error", err))
 		}
 	}()
 
