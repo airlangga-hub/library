@@ -43,3 +43,21 @@ func (h *handler) Register(c *echo.Context) error {
 		Data:    user,
 	})
 }
+
+func (h *handler) Login(c *echo.Context) error {
+	var payload LoginRequest
+	if err := c.Bind(&payload); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").Wrap(err)
+	}
+
+	if err := h.Validate.Struct(payload); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").Wrap(err)
+	}
+	
+	token, err := h.Svc.Login(payload.Email, payload.Password)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user").Wrap(err)
+	}
+	
+	return c.JSON(http.StatusOK, map[string]string{"token": token})
+}

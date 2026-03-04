@@ -3,7 +3,7 @@ package repository
 type User struct {
 	ID       int    `gorm:"primaryKey"`
 	FullName string `gorm:"not null"`
-	Email    string `gorm:"index;not null"`
+	Email    string `gorm:"uniqueIndex;not null"`
 	Password string `gorm:"not null"`
 	Author   bool   `gorm:"not null;default:false"`
 	Books    []Book `gorm:"foreignKey:AuthorID"`

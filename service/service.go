@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/airlangga-hub/library/helper"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -43,4 +44,22 @@ func (s *service) Register(user User) (User, error) {
 	}()
 
 	return user, nil
+}
+
+func (s *service) Login(email, password string) (string, error) {
+	user, err := s.Repo.GetUserByEmail(email)
+	if err != nil {
+		return "", fmt.Errorf("service.Login: %w", err)
+	}
+	
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return "", fmt.Errorf("service.Login: %w", err)
+	}
+	
+	token, err := helper.MakeJWT(user.ID, email, s.JWTSecret)
+	if err != nil {
+		return "", fmt.Errorf("service.Login: %w", err)
+	}
+	
+	return token, nil
 }

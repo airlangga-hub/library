@@ -3,6 +3,7 @@ package service
 import "time"
 
 type User struct {
+	ID       int    `json:"-"`
 	FullName string `json:"full_name,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Password string `json:"-"`

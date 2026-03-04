@@ -38,3 +38,17 @@ func (r *repository) CreateUser(user service.User) (service.User, error) {
 
 	return user, nil
 }
+
+func (r *repository) GetUserByEmail(email string) (service.User, error) {
+	user := User{}
+	err := r.DB.Where("email = ?", email).First(&user).Error
+	if err != nil {
+		return service.User{}, fmt.Errorf("repo.GetUserByEmail: %w", err)
+	}
+	return service.User{
+		ID:       user.ID,
+		FullName: user.FullName,
+		Email:    user.Email,
+		Password: user.Password,
+	}, nil
+}
