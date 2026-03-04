@@ -45,6 +45,16 @@ func main() {
 		log.Println("set search path failed:", err)
 		return
 	}
+	
+	if err := db.AutoMigrate(
+		&repository.User{},
+		&repository.Category{},
+		&repository.Book{},
+		&repository.Rent{},
+	); err != nil {
+		log.Println("db automigrate failed:", err)
+		return
+	}
 
 	validate := validator.New(validator.WithRequiredStructEnabled())
 
