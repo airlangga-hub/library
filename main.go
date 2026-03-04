@@ -30,6 +30,11 @@ func main() {
 		log.Fatalln("db open failed:", err)
 	}
 	
+	if err := db.Exec("SET search_path TO library").Error; err != nil {
+		log.Println("set search path failed:", err)
+		return
+	}
+	
 	validate := validator.New(validator.WithRequiredStructEnabled())
 	
 	repo := repository.NewRepository(db, apiKey)
