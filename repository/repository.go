@@ -184,3 +184,30 @@ func (r *repository) AdminGetRentsReport() ([]service.User, error) {
 
 	return uusers, nil
 }
+
+func (r *repository) AdminGetAuthorsReport() ([]service.User, error) {
+	users := make([]User, 0, 16)
+
+	err := r.DB.
+		Select("users.id, users.full_name, users.email, users.author, COUNT(books.id) AS total_book").
+		Joins("LEFT JOIN books ON books.author_id = users.id").
+		Where("users.author = true").
+		Group("users.id").
+		Find(&users).
+		Error
+
+	if err != nil {
+		return nil, fmt.Errorf("repo.AdminGetAuthorsReport: %w", err)
+	}
+
+	uusers := make([]service.User, len(users))
+	for i, u := range users {
+		uusers[i] = service.User{
+			FullName:  u.FullName,
+			Email:     u.Email,
+			TotalBook: u.TotalBook,
+		}
+	}
+	
+	return uusers, nil
+}

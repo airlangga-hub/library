@@ -175,3 +175,25 @@ func (h *handler) AdminGetRentsReport(c *echo.Context) error {
 		Data:    userRents,
 	})
 }
+
+func (h *handler) AdminGetAuthorsReport(c *echo.Context) error {
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	claims, ok := token.Claims.(*helper.MyClaims)
+	if !ok || !claims.Admin {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+	
+	userBooks, err := h.Svc.AdminGetRentsReport()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "get books report failed")
+	}
+
+	return c.JSON(http.StatusOK, Response{
+		Message: http.StatusText(http.StatusOK),
+		Data:    userBooks,
+	})
+}

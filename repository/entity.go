@@ -12,6 +12,7 @@ type User struct {
 	Books     []Book `gorm:"foreignKey:AuthorID"`
 	Rents     []Rent `gorm:"foreignKey:UserID"`
 	TotalRent int    `gorm:"-:migration;->"`
+	TotalBook int    `gorm:"-:migration;->"`
 }
 
 type Category struct {

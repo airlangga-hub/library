@@ -106,3 +106,11 @@ func (s *service) AdminGetRentsReport() ([]User, error) {
 	}
 	return users, nil
 }
+
+func (s *service) AdminGetAuthorsReport() ([]User, error) {
+	users, err := s.Repo.AdminGetAuthorsReport()
+	if err != nil {
+		return nil, fmt.Errorf("service.AdminGetAuthorsReport: %w", err)
+	}
+	return users, nil
+}

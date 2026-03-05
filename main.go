@@ -119,7 +119,7 @@ func main() {
 	// admin
 	admin := e.Group("/admin", echojwt.WithConfig(config))
 	admin.GET("/rent", h.AdminGetRentsReport)
-	admin.GET("/authors", h.AdminGetAuthors)
+	admin.GET("/authors", h.AdminGetAuthorsReport)
 
 	// graceful shutdown
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
