@@ -8,8 +8,8 @@ type User struct {
 	FullName  string `json:"full_name,omitempty"`
 	Email     string `json:"email,omitempty"`
 	Password  string `json:"-"`
-	TotalRent int    `json:"total_rent"`
-	TotalBook int    `json:"total_book"`
+	TotalRent int    `json:"total_rent,omitempty"`
+	TotalBook int    `json:"total_book,omitempty"`
 }
 
 type Category struct {
