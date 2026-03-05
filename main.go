@@ -115,6 +115,7 @@ func main() {
 	books := e.Group("/books", echojwt.WithConfig(config))
 	books.POST("/rent", h.RentBook)
 	books.GET("", h.GetBooks)
+	books.POST("/return", h.ReturnBook)
 	
 	// admin
 	admin := e.Group("/admin", echojwt.WithConfig(config))
