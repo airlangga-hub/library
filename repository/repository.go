@@ -134,3 +134,24 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, returnDate time.T
 		RentDate:        rent.CreatedAt,
 	}, nil
 }
+
+func (r *repository) GetBooks() ([]service.Book, error) {
+	books := make([]Book, 0, 16)
+
+	err := r.DB.Joins("Author").Joins("Category").Find(&books).Error
+	if err != nil {
+		return nil, fmt.Errorf("repo.GetBooks: %w", err)
+	}
+
+	bbooks := make([]service.Book, len(books))
+	for i, b := range books {
+		bbooks[i] = service.Book{
+			Title:       b.Title,
+			Description: b.Description,
+			Author:      b.Author.FullName,
+			Category:    b.Category.Name,
+		}
+	}
+
+	return bbooks, nil
+}

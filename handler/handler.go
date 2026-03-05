@@ -131,3 +131,25 @@ func (h *handler) RentBook(c *echo.Context) error {
 		Data:    rent,
 	})
 }
+
+func (h *handler) GetBooks(c *echo.Context) error {
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	_, ok = token.Claims.(*helper.MyClaims)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	books, err := h.Svc.GetBooks()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "get books failed")
+	}
+
+	return c.JSON(http.StatusOK, Response{
+		Message: http.StatusText(http.StatusOK),
+		Data:    books,
+	})
+}

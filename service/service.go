@@ -83,3 +83,11 @@ func (s *service) RentBook(userID, bookID, duration int) (Rent, error) {
 	}
 	return rent, nil
 }
+
+func (s *service) GetBooks() ([]Book, error) {
+	books, err := s.Repo.GetBooks()
+	if err != nil {
+		return nil, fmt.Errorf("service.GetBooks: %w", err)
+	}
+	return books, nil
+}
