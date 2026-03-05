@@ -82,9 +82,9 @@ func (s *service) GetRents(userID int) ([]Rent, error) {
 
 func (s *service) RentBook(userID, bookID, duration int) (Rent, error) {
 	createdAt := time.Now()
-	returnDate := createdAt.Add(24 * time.Hour * time.Duration(duration))
+	dueDate := createdAt.Add(24 * time.Hour * time.Duration(duration))
 
-	rent, err := s.Repo.CreateRent(userID, bookID, createdAt, returnDate)
+	rent, err := s.Repo.CreateRent(userID, bookID, createdAt, dueDate)
 	if err != nil {
 		return Rent{}, fmt.Errorf("service.RentBook: %w", err)
 	}

@@ -86,12 +86,12 @@ func (r *repository) GetRents(userID int) ([]service.Rent, error) {
 	return rrents, nil
 }
 
-func (r *repository) CreateRent(userID, bookID int, createdAt, returnDate time.Time) (service.Rent, error) {
+func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time) (service.Rent, error) {
 	rent := Rent{
-		BookID:     bookID,
-		UserID:     userID,
-		CreatedAt:  createdAt,
-		ReturnDate: returnDate,
+		BookID:    bookID,
+		UserID:    userID,
+		CreatedAt: createdAt,
+		DueDate:   dueDate,
 	}
 
 	err := r.DB.Transaction(func(tx *gorm.DB) error {
@@ -208,6 +208,6 @@ func (r *repository) AdminGetAuthorsReport() ([]service.User, error) {
 			TotalBook: u.TotalBook,
 		}
 	}
-	
+
 	return uusers, nil
 }

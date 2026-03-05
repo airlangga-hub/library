@@ -39,6 +39,7 @@ type Rent struct {
 	UserID     int  `gorm:"index"`
 	User       User `gorm:"foreignKey:UserID"`
 	CreatedAt  time.Time
+	DueDate    time.Time
 	ReturnDate time.Time
 }
 
