@@ -57,7 +57,14 @@ func (s *service) Login(email, password string) (string, error) {
 		return "", fmt.Errorf("service.Login: %w", err)
 	}
 
-	token, err := helper.MakeJWT(user.ID, email, s.JWTSecret)
+	var token string
+
+	if user.Admin {
+		token, err = helper.MakeJWT(true, user.ID, email, s.JWTSecret)
+	} else {
+		token, err = helper.MakeJWT(false, user.ID, email, s.JWTSecret)
+	}
+
 	if err != nil {
 		return "", fmt.Errorf("service.Login: %w", err)
 	}
@@ -90,4 +97,12 @@ func (s *service) GetBooks() ([]Book, error) {
 		return nil, fmt.Errorf("service.GetBooks: %w", err)
 	}
 	return books, nil
+}
+
+func (s *service) AdminGetRentsReport() ([]User, error) {
+	users, err := s.Repo.AdminGetRentsReport()
+	if err != nil {
+		return nil, fmt.Errorf("service.AdminGetRentsReport: %w", err)
+	}
+	return users, nil
 }

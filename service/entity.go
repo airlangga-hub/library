@@ -3,12 +3,14 @@ package service
 import "time"
 
 type User struct {
-	ID       int    `json:"-"`
-	FullName string `json:"full_name,omitempty"`
-	Email    string `json:"email,omitempty"`
-	Password string `json:"-"`
-	Books    []Book `json:"books,omitempty"`
-	Rents    []Rent `json:"rents,omitempty"`
+	ID        int    `json:"-"`
+	Admin     bool   `json:"-"`
+	FullName  string `json:"full_name,omitempty"`
+	Email     string `json:"email,omitempty"`
+	Password  string `json:"-"`
+	Books     []Book `json:"books,omitempty"`
+	Rents     []Rent `json:"rents,omitempty"`
+	TotalRent int    `json:"total_rent"`
 }
 
 type Category struct {

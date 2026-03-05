@@ -3,13 +3,15 @@ package repository
 import "time"
 
 type User struct {
-	ID       int    `gorm:"primaryKey"`
-	FullName string `gorm:"not null"`
-	Email    string `gorm:"uniqueIndex;not null"`
-	Password string `gorm:"not null"`
-	Author   bool   `gorm:"not null;default:false"`
-	Books    []Book `gorm:"foreignKey:AuthorID"`
-	Rents    []Rent `gorm:"foreignKey:UserID"`
+	ID        int    `gorm:"primaryKey"`
+	Admin     bool   `gorm:"not null;default:false"`
+	FullName  string `gorm:"not null"`
+	Email     string `gorm:"uniqueIndex;not null"`
+	Password  string `gorm:"not null"`
+	Author    bool   `gorm:"not null;default:false"`
+	Books     []Book `gorm:"foreignKey:AuthorID"`
+	Rents     []Rent `gorm:"foreignKey:UserID"`
+	TotalRent int    `gorm:"-:migration;->"`
 }
 
 type Category struct {
@@ -30,11 +32,11 @@ type Book struct {
 }
 
 type Rent struct {
-	ID         int       `gorm:"primaryKey"`
-	BookID     int       `gorm:"index"`
-	Book       Book      `gorm:"foreignKey:BookID"`
-	UserID     int       `gorm:"index"`
-	User       User      `gorm:"foreignKey:UserID"`
+	ID         int  `gorm:"primaryKey"`
+	BookID     int  `gorm:"index"`
+	Book       Book `gorm:"foreignKey:BookID"`
+	UserID     int  `gorm:"index"`
+	User       User `gorm:"foreignKey:UserID"`
 	CreatedAt  time.Time
 	ReturnDate time.Time
 }

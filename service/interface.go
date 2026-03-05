@@ -9,6 +9,7 @@ type Repository interface {
 	GetRents(userID int) ([]Rent, error)
 	CreateRent(userID, bookID int, createdAt, returnDate time.Time) (Rent, error)
 	GetBooks() ([]Book, error)
+	AdminGetRentsReport() ([]User, error)
 }
 
 type Service interface {
@@ -17,4 +18,5 @@ type Service interface {
 	GetRents(userID int) ([]Rent, error)
 	RentBook(userID, bookID, duration int) (Rent, error)
 	GetBooks() ([]Book, error)
+	AdminGetRentsReport() ([]User, error)
 }

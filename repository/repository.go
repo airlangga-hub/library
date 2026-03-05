@@ -48,6 +48,7 @@ func (r *repository) GetUserByEmail(email string) (service.User, error) {
 	}
 	return service.User{
 		ID:       user.ID,
+		Admin:    user.Admin,
 		FullName: user.FullName,
 		Email:    user.Email,
 		Password: user.Password,
@@ -154,4 +155,32 @@ func (r *repository) GetBooks() ([]service.Book, error) {
 	}
 
 	return bbooks, nil
+}
+
+func (r *repository) AdminGetRentsReport() ([]service.User, error) {
+	users := make([]User, 0, 16)
+
+	err := r.DB.
+		Model(&User{}).
+		Select("users.id, users.full_name, users.email, COUNT(rents.id) AS total_rent").
+		Joins("LEFT JOIN rents ON rents.user_id = users.id").
+		Group("users.id").
+		Order("total_rent DESC").
+		Find(&users).
+		Error
+
+	if err != nil {
+		return nil, fmt.Errorf("repo.AdminGetRentsReport: %w", err)
+	}
+
+	uusers := make([]service.User, len(users))
+	for i, u := range users {
+		uusers[i] = service.User{
+			FullName:  u.FullName,
+			Email:     u.Email,
+			TotalRent: u.TotalRent,
+		}
+	}
+
+	return uusers, nil
 }
