@@ -11,7 +11,7 @@ type Repository interface {
 	GetBooks() ([]Book, error)
 	AdminGetRentsReport() ([]User, error)
 	AdminGetAuthorsReport() ([]User, error)
-	ReturnBook(userID, bookID int) (Book, error)
+	ReturnBook(userID, bookID int) (Rent, error)
 }
 
 type Service interface {
@@ -22,5 +22,5 @@ type Service interface {
 	GetBooks() ([]Book, error)
 	AdminGetRentsReport() ([]User, error)
 	AdminGetAuthorsReport() ([]User, error)
-	ReturnBook(userID, bookID int) (Book, error)
+	ReturnBook(userID, bookID int) (Rent, error)
 }

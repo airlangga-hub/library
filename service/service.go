@@ -114,3 +114,12 @@ func (s *service) AdminGetAuthorsReport() ([]User, error) {
 	}
 	return users, nil
 }
+
+func (s *service) ReturnBook(userID, bookID int) (Rent, error) {
+	rent, err := s.Repo.ReturnBook(userID, bookID)
+	if err != nil {
+		return Rent{}, fmt.Errorf("service.ReturnBook: %w", err)
+	}
+	return rent, nil
+}
+

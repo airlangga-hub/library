@@ -6,6 +6,7 @@ import (
 
 	"github.com/airlangga-hub/library/service"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type repository struct {
@@ -133,6 +134,72 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time
 		BookAuthor:      rent.Book.Author.FullName,
 		BookCategory:    rent.Book.Category.Name,
 		RentDate:        rent.CreatedAt,
+		DueDate:         rent.DueDate,
+	}, nil
+}
+
+func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
+	book := Book{ID: bookID}
+	var rent Rent
+
+	err := r.DB.Transaction(func(tx *gorm.DB) error {
+
+		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
+			Joins("Book").
+			Joins("Book.Author").
+			Joins("Book.Category").
+			Where("user_id = ? AND book_id = ? AND return_date = ?", userID, bookID, time.Time{}).
+			First(&rent).
+			Error
+		if err != nil {
+			return err
+		}
+
+		fine := 0
+		now := time.Now()
+		hoursLate := int(now.Sub(rent.DueDate).Hours())
+		if hoursLate >= 1 {
+			fine = 2000 * hoursLate
+		}
+
+		rent.Fine = fine
+		rent.ReturnDate = now
+
+		res := tx.Model(&rent).
+			Updates(map[string]any{"fine": fine, "return_date": now})
+		if err := res.Error; err != nil {
+			return err
+		}
+		if res.RowsAffected == 0 {
+			return gorm.ErrRecordNotFound
+		}
+
+		res = tx.Model(&book).
+			Where("available = false").
+			Update("available", true)
+		if err := res.Error; err != nil {
+			return err
+		}
+		if res.RowsAffected == 0 {
+			return gorm.ErrRecordNotFound
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return service.Rent{}, fmt.Errorf("repo.ReturnBook: %w", err)
+	}
+
+	return service.Rent{
+		BookTitle:       rent.Book.Title,
+		BookDescription: rent.Book.Description,
+		BookAuthor:      rent.Book.Author.FullName,
+		BookCategory:    rent.Book.Category.Name,
+		RentDate:        rent.CreatedAt,
+		DueDate:         rent.DueDate,
+		ReturnDate:      &rent.ReturnDate,
+		Fine:            rent.Fine,
 	}, nil
 }
 

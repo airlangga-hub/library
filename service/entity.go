@@ -25,9 +25,12 @@ type Book struct {
 }
 
 type Rent struct {
-	BookTitle       string    `json:"book_title,omitempty"`
-	BookDescription string    `json:"book_description,omitempty"`
-	BookAuthor      string    `json:"book_author,omitempty"`
-	BookCategory    string    `json:"book_category,omitempty"`
-	RentDate        time.Time `json:"rent_date"`
+	BookTitle       string     `json:"book_title,omitempty"`
+	BookDescription string     `json:"book_description,omitempty"`
+	BookAuthor      string     `json:"book_author,omitempty"`
+	BookCategory    string     `json:"book_category,omitempty"`
+	RentDate        time.Time  `json:"rent_date"`
+	DueDate         time.Time  `json:"due_date"`
+	ReturnDate      *time.Time `json:"return_date,omitempty"`
+	Fine            int        `json:"fine,omitempty"`
 }

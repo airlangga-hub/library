@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/airlangga-hub/library/helper"
 	"github.com/airlangga-hub/library/service"
@@ -186,7 +187,7 @@ func (h *handler) AdminGetAuthorsReport(c *echo.Context) error {
 	if !ok || !claims.Admin {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
 	}
-	
+
 	userBooks, err := h.Svc.AdminGetRentsReport()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "get books report failed")
@@ -195,5 +196,35 @@ func (h *handler) AdminGetAuthorsReport(c *echo.Context) error {
 	return c.JSON(http.StatusOK, Response{
 		Message: http.StatusText(http.StatusOK),
 		Data:    userBooks,
+	})
+}
+
+func (h *handler) ReturnBook(c *echo.Context) error {
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	claims, ok := token.Claims.(*helper.MyClaims)
+	if !ok || !claims.Admin {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
+	}
+
+	bookID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "book id must be integer").Wrap(err)
+	}
+
+	rent, err := h.Svc.ReturnBook(claims.UserID, bookID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "no rent with that book id found").Wrap(err)
+		}
+		return echo.NewHTTPError(http.StatusOK, "return book failed").Wrap(err)
+	}
+
+	return c.JSON(http.StatusOK, Response{
+		Message: http.StatusText(http.StatusOK),
+		Data:    rent,
 	})
 }

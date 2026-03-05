@@ -39,8 +39,9 @@ type Rent struct {
 	UserID     int  `gorm:"index"`
 	User       User `gorm:"foreignKey:UserID"`
 	CreatedAt  time.Time
-	DueDate    time.Time
+	DueDate    time.Time `gorm:"not null"`
 	ReturnDate time.Time
+	Fine       int `gorm:"not null;default:0"`
 }
 
 type MailjetRequest struct {
