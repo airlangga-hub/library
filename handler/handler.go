@@ -188,7 +188,7 @@ func (h *handler) AdminGetAuthorsReport(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
 	}
 
-	userBooks, err := h.Svc.AdminGetRentsReport()
+	userBooks, err := h.Svc.AdminGetAuthorsReport()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "get books report failed")
 	}
