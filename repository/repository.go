@@ -6,7 +6,6 @@ import (
 
 	"github.com/airlangga-hub/library/service"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type repository struct {
@@ -150,12 +149,12 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 
 	err := r.DB.Transaction(func(tx *gorm.DB) error {
 
-		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
-			Joins("JOIN books ON books.id = rents.book_id AND rents.user_id = ?", userID).
+		err := tx.
+			Joins("JOIN books ON books.id = rents.book_id").
 			Joins("JOIN categories ON categories.id = books.category_id").
 			Joins("JOIN users ON users.id = books.author_id").
-			Select(`rents.created_at, rents.due_date, rents.return_date, rents.fine, rents.active, books.title AS "Book__title", books.description AS "Book__description", users.full_name AS "Book__Author__full_name", categories.name AS "Book__Category__name"`).
-			Where("user_id = ? AND book_id = ? AND return_date IS NULL", userID, bookID).
+			Select(`rents.id, rents.created_at, rents.due_date, rents.return_date, rents.fine, rents.active, books.title AS "Book__title", books.description AS "Book__description", users.full_name AS "Book__Author__full_name", categories.name AS "Book__Category__name"`).
+			Where("rents.user_id = ? AND rents.book_id = ? AND rents.return_date IS NULL", userID, bookID).
 			First(&rent).
 			Error
 		if err != nil {
@@ -174,7 +173,6 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 		rent.ReturnDate = &now
 
 		res := tx.Model(&rent).
-			Where("id = ?", rent.ID).
 			Updates(map[string]any{"fine": fine, "return_date": now, "active": false})
 		if err := res.Error; err != nil {
 			return err
@@ -184,7 +182,7 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 		}
 
 		res = tx.Model(&book).
-			Where("available = false AND id = ?", bookID).
+			Where("available = false").
 			Update("available", true)
 		if err := res.Error; err != nil {
 			return err
