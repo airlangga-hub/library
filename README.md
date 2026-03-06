@@ -11,7 +11,7 @@ This is a Library Management System written in Go.
 
 # Deployment URL
 
-This project is deployed here: 
+This project is deployed here: https://library-production-76e6.up.railway.app
 
 # API Documentation
 
