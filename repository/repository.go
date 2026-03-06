@@ -221,7 +221,7 @@ func (r *repository) GetBooks() ([]service.Book, error) {
 		Select(`books.id, books.title, books.description, users.full_name AS "Author__full_name", categories.name AS "Category__name"`).
 		Find(&books).
 		Error
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("repo.GetBooks: %w", err)
 	}
@@ -233,6 +233,7 @@ func (r *repository) GetBooks() ([]service.Book, error) {
 			Description: b.Description,
 			Author:      b.Author.FullName,
 			Category:    b.Category.Name,
+			Available:   b.Available,
 		}
 	}
 
