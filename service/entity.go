@@ -22,7 +22,7 @@ type Book struct {
 	Description string `json:"description,omitempty"`
 	Author      string `json:"author_id,omitempty"`
 	Category    string `json:"category_id,omitempty"`
-	Available   bool   `json:"available,omitempty"`
+	Available   bool   `json:"available"`
 }
 
 type Rent struct {
