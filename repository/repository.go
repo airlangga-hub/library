@@ -144,7 +144,6 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time
 }
 
 func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
-	book := Book{ID: bookID}
 	var rent Rent
 
 	err := r.DB.Transaction(func(tx *gorm.DB) error {
@@ -181,8 +180,8 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 			return gorm.ErrRecordNotFound
 		}
 
-		res = tx.Model(&book).
-			Where("available = false").
+		res = tx.Table("books").
+			Where("available = false AND id = ?", bookID).
 			Update("available", true)
 		if err := res.Error; err != nil {
 			return err
