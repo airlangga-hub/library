@@ -206,7 +206,7 @@ func (h *handler) ReturnBook(c *echo.Context) error {
 	}
 
 	claims, ok := token.Claims.(*helper.MyClaims)
-	if !ok || !claims.Admin {
+	if !ok {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized user")
 	}
 
