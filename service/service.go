@@ -39,7 +39,7 @@ func (s *service) Register(user User) (User, error) {
 	go func() {
 		textPart := fmt.Sprintf("Hi %s!\n\nThanks for registering to Library FTGO 14!\nWe hope you're doing well!\n\nBest regards,\nLibrary FTGO 14", user.FullName)
 
-		if err := s.Repo.SendEmail(user.Email, "Register Success!!", textPart); err != nil {
+		if err := s.Repo.SendEmail(user.Email, "Register Confirmation - " + user.FullName, textPart); err != nil {
 			s.Logger.Error("Send Email Failed!!!", slog.Any("error", err))
 		}
 	}()
@@ -91,17 +91,17 @@ func (s *service) RentBook(email string, userID, bookID, duration int) (Rent, er
 
 	go func() {
 		textPart := fmt.Sprintf(
-			`Thanks for choosing Library FTGO 14 for your recent book rental.\n\n
-			Here's you rental detail:\n
-			Book Title: %s\n
-			Book Description: %s\n
-			Book Author: %s\n
-			Book Category: %s\n
-			Rent Date: %s\n
-			Due Date: %s\n\n
-			We hope our books provide you with the resources you were looking for.\n\n
-			Best regards,\n
-			Library FTGO 14`,
+			"Thanks for choosing Library FTGO 14 for your recent book rental.\n\n"+
+			"Here's you rental detail:\n"+
+			"Book Title: %s\n"+
+			"Book Description: %s\n"+
+			"Book Author: %s\n"+
+			"Book Category: %s\n"+
+			"Rent Date: %s\n"+
+			"Due Date: %s\n\n"+
+			"We hope our books provide you with the resources you were looking for.\n\n"+
+			"Best regards,\n"+
+			"Library FTGO 14",
 			rent.BookTitle,
 			rent.BookDescription,
 			rent.BookAuthor,
@@ -109,8 +109,10 @@ func (s *service) RentBook(email string, userID, bookID, duration int) (Rent, er
 			rent.RentDate,
 			rent.DueDate,
 		)
+		
+		subject := "Book Rental Confirmation - " + rent.BookTitle
 
-		if err := s.Repo.SendEmail(email, "Thank You for Choosing Library FTGO 14", textPart); err != nil {
+		if err := s.Repo.SendEmail(email, subject, textPart); err != nil {
 			s.Logger.Error("Send Email Failed!!!", slog.Any("error", err))
 		}
 	}()
