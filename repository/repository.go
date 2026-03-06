@@ -171,7 +171,9 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 		rent.Fine = fine
 		rent.ReturnDate = &now
 
-		res := tx.Model(&rent).
+		res := tx.
+			Table("rents").
+			Where("id = ?", rent.ID).
 			Updates(map[string]any{"fine": fine, "return_date": now, "active": false})
 		if err := res.Error; err != nil {
 			return err
