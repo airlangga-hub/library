@@ -81,6 +81,10 @@ func (r *repository) GetRents(userID int) ([]service.Rent, error) {
 			BookAuthor:      r.Book.Author.FullName,
 			BookCategory:    r.Book.Category.Name,
 			RentDate:        r.CreatedAt,
+			DueDate:         r.DueDate,
+			ReturnDate:      r.ReturnDate,
+			Fine:            r.Fine,
+			Active:          r.Active,
 		}
 	}
 
@@ -135,6 +139,7 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time
 		BookCategory:    rent.Book.Category.Name,
 		RentDate:        rent.CreatedAt,
 		DueDate:         rent.DueDate,
+		Active:          rent.Active,
 	}, nil
 }
 
