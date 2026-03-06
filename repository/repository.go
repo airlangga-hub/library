@@ -61,10 +61,10 @@ func (r *repository) GetRents(userID int) ([]service.Rent, error) {
 
 	res := r.DB.
 		Where("user_id = ?", userID).
-		Joins("Book").
-		Joins("Book.Category").
-		Joins("Book.Author").
-		Omit("Book.Author.total_rent", "Book.Author.total_book").
+		Joins("JOIN books ON books.id = rents.book_id").
+		Joins("JOIN categories ON categories.id = books.category_id").
+		Joins("JOIN users ON users.id = books.author_id").
+		Select(`rents.id, rents.created_at, rents.due_date, rents.return_date, rents.fine, rents.active, books.id AS "Book__id", books.title AS "Book__title", books.description AS "Book__description", users.id AS "Book__Author__id", users.full_name AS "Book__Author__full_name", categories.id AS "Book__Category__id", categories.name AS "Book__Category__name"`).
 		Find(&rents)
 
 	if err := res.Error; err != nil {
@@ -119,10 +119,10 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time
 		}
 
 		err = r.DB.
-			Joins("Book").
-			Joins("Book.Author").
-			Joins("Book.Category").
-			Omit("Book.Author.total_rent", "Book.Author.total_book").
+			Joins("JOIN books ON books.id = rents.book_id AND rents.user_id = ?", userID).
+			Joins("JOIN categories ON categories.id = books.category_id").
+			Joins("JOIN users ON users.id = books.author_id").
+			Select(`rents.id, rents.created_at, rents.due_date, rents.return_date, rents.fine, rents.active, books.id AS "Book__id", books.title AS "Book__title", books.description AS "Book__description", users.id AS "Book__Author__id", users.full_name AS "Book__Author__full_name", categories.id AS "Book__Category__id", categories.name AS "Book__Category__name"`).
 			First(&rent).
 			Error
 
@@ -151,10 +151,10 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 	err := r.DB.Transaction(func(tx *gorm.DB) error {
 
 		err := tx.Clauses(clause.Locking{Strength: "UPDATE"}).
-			Joins("Book").
-			Joins("Book.Author").
-			Joins("Book.Category").
-			Omit("Book.Author.total_rent", "Book.Author.total_book").
+			Joins("JOIN books ON books.id = rents.book_id AND rents.user_id = ?", userID).
+			Joins("JOIN categories ON categories.id = books.category_id").
+			Joins("JOIN users ON users.id = books.author_id").
+			Select(`rents.id, rents.created_at, rents.due_date, rents.return_date, rents.fine, rents.active, books.id AS "Book__id", books.title AS "Book__title", books.description AS "Book__description", users.id AS "Book__Author__id", users.full_name AS "Book__Author__full_name", categories.id AS "Book__Category__id", categories.name AS "Book__Category__name"`).
 			Where("user_id = ? AND book_id = ? AND return_date IS NULL", userID, bookID).
 			First(&rent).
 			Error
