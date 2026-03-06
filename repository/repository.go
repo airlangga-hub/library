@@ -170,6 +170,7 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 
 		rent.Fine = fine
 		rent.ReturnDate = &now
+		rent.Active = false
 
 		res := tx.
 			Table("rents").
