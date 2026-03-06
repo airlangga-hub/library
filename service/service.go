@@ -39,7 +39,7 @@ func (s *service) Register(user User) (User, error) {
 	go func() {
 		textPart := fmt.Sprintf("Hi %s!\n\nThanks for registering to Library FTGO 14!\nWe hope you're doing well!\n\nBest regards,\nLibrary FTGO 14", user.FullName)
 
-		if err := s.Repo.SendEmail(user.Email, "Register Success", textPart); err != nil {
+		if err := s.Repo.SendEmail(user.Email, "Register Success!!", textPart); err != nil {
 			s.Logger.Error("Send Email Failed!!!", slog.Any("error", err))
 		}
 	}()

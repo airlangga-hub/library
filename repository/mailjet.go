@@ -47,7 +47,7 @@ func (r *repository) SendEmail(to, subject, textPart string) error {
 	defer res.Body.Close()
 	
 	var mailjetResp MailjetResponse
-	if err := json.NewDecoder(req.Body).Decode(&mailjetResp); err != nil {
+	if err := json.NewDecoder(res.Body).Decode(&mailjetResp); err != nil {
 		return fmt.Errorf("repo.SendEmail: %w", err)
 	}
 	
