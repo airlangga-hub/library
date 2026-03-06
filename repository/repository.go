@@ -152,7 +152,7 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 			Joins("JOIN books ON books.id = rents.book_id").
 			Joins("JOIN categories ON categories.id = books.category_id").
 			Joins("JOIN users ON users.id = books.author_id").
-			Select(`rents.id, rents.created_at, rents.due_date, rents.return_date, rents.fine, rents.active, books.title AS "Book__title", books.description AS "Book__description", users.full_name AS "Book__Author__full_name", categories.name AS "Book__Category__name"`).
+			Select(`rents.id, rents.created_at, rents.due_date, books.title AS "Book__title", books.description AS "Book__description", users.full_name AS "Book__Author__full_name", categories.name AS "Book__Category__name"`).
 			Where("rents.user_id = ? AND rents.book_id = ? AND rents.return_date IS NULL", userID, bookID).
 			First(&rent).
 			Error
