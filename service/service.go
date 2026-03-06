@@ -90,7 +90,25 @@ func (s *service) RentBook(email string, userID, bookID, duration int) (Rent, er
 	}
 
 	go func() {
-		textPart := "Thanks for choosing Library FTGO 14 for your recent book rental.\n\nWe hope our books provide you with the resources you were looking for.\n\nBest regards,\nLibrary FTGO 14"
+		textPart := fmt.Sprintf(
+			`Thanks for choosing Library FTGO 14 for your recent book rental.\n\n
+			Here's you rental detail:\n
+			Book Title: %s\n
+			Book Description: %s\n
+			Book Author: %s\n
+			Book Category: %s\n
+			Rent Date: %s\n
+			Due Date: %s\n\n
+			We hope our books provide you with the resources you were looking for.\n\n
+			Best regards,\n
+			Library FTGO 14`,
+			rent.BookTitle,
+			rent.BookDescription,
+			rent.BookAuthor,
+			rent.BookCategory,
+			rent.RentDate,
+			rent.DueDate,
+		)
 
 		if err := s.Repo.SendEmail(email, "Thank You for Choosing Library FTGO 14", textPart); err != nil {
 			s.Logger.Error("Send Email Failed!!!", slog.Any("error", err))
