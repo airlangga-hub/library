@@ -215,7 +215,13 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 func (r *repository) GetBooks() ([]service.Book, error) {
 	books := make([]Book, 0, 16)
 
-	err := r.DB.Joins("Author").Joins("Category").Find(&books).Error
+	err := r.DB.
+		Joins("JOIN users ON users.id = books.author_id").
+		Joins("JOIN categories ON categories.id = books.category_id").
+		Select(`books.id, books.title, books.description, users.full_name AS "Author__full_name", categories.name AS "Category__name"`).
+		Find(&books).
+		Error
+	
 	if err != nil {
 		return nil, fmt.Errorf("repo.GetBooks: %w", err)
 	}
