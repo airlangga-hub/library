@@ -106,8 +106,8 @@ func (s *service) RentBook(email string, userID, bookID, duration int) (Rent, er
 			rent.BookDescription,
 			rent.BookAuthor,
 			rent.BookCategory,
-			rent.RentDate,
-			rent.DueDate,
+			rent.RentDate.Format("2006-01-02 15:04"),
+			rent.DueDate.Format("2006-01-02 15:04"),
 		)
 		
 		subject := "Book Rental Confirmation - " + rent.BookTitle
