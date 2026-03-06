@@ -183,7 +183,7 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 		}
 
 		res = tx.Model(&book).
-			Where("available = false").
+			Where("available = false AND id = ?", bookID).
 			Update("available", true)
 		if err := res.Error; err != nil {
 			return err

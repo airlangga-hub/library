@@ -220,7 +220,7 @@ func (h *handler) ReturnBook(c *echo.Context) error {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "no rent with that book id found").Wrap(err)
 		}
-		return echo.NewHTTPError(http.StatusOK, "return book failed").Wrap(err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "return book failed").Wrap(err)
 	}
 
 	return c.JSON(http.StatusOK, Response{
