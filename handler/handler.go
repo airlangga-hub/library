@@ -146,7 +146,7 @@ func (h *handler) GetBooks(c *echo.Context) error {
 
 	books, err := h.Svc.GetBooks()
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "get books failed")
+		return echo.NewHTTPError(http.StatusInternalServerError, "get books failed").Wrap(err)
 	}
 
 	return c.JSON(http.StatusOK, Response{
