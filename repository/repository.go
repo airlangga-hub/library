@@ -276,6 +276,7 @@ func (r *repository) AdminGetAuthorsReport() ([]service.AuthorBookReport, error)
 		Joins("JOIN books ON books.author_id = users.id").
 		Where("users.author = true").
 		Group("users.id").
+		Order("total_book DESC").
 		Find(&users).
 		Error
 
