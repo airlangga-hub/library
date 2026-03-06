@@ -64,6 +64,7 @@ func (r *repository) GetRents(userID int) ([]service.Rent, error) {
 		Joins("Book").
 		Joins("Book.Category").
 		Joins("Book.Author").
+		Omit("Book.Author.total_rent", "Book.Author.total_book").
 		Find(&rents)
 
 	if err := res.Error; err != nil {
@@ -118,10 +119,10 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time
 		}
 
 		err = r.DB.
-			Where("id = ?", rent.ID).
 			Joins("Book").
 			Joins("Book.Author").
 			Joins("Book.Category").
+			Omit("Book.Author.total_rent", "Book.Author.total_book").
 			First(&rent).
 			Error
 
@@ -153,6 +154,7 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 			Joins("Book").
 			Joins("Book.Author").
 			Joins("Book.Category").
+			Omit("Book.Author.total_rent", "Book.Author.total_book").
 			Where("user_id = ? AND book_id = ? AND return_date IS NULL", userID, bookID).
 			First(&rent).
 			Error
