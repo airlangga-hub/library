@@ -119,7 +119,7 @@ func (h *handler) RentBook(c *echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").Wrap(err)
 	}
 
-	rent, err := h.Svc.RentBook(claims.UserID, payload.BookID, payload.Duration)
+	rent, err := h.Svc.RentBook(claims.Subject, claims.UserID, payload.BookID, payload.Duration)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return echo.NewHTTPError(http.StatusNotFound, "book unavailable for now").Wrap(err)

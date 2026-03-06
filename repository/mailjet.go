@@ -8,8 +8,6 @@ import (
 )
 
 func (r *repository) SendEmail(to, subject, textPart string) error {
-	url := "https://api.mailjet.com/v3.1/send"
-
 	payload := MailjetRequest{
 		Messages: []MessageRequest{
 			{
@@ -34,7 +32,7 @@ func (r *repository) SendEmail(to, subject, textPart string) error {
 		return fmt.Errorf("repo.SendEmail: %w", err)
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewReader(ppayload))
+	req, err := http.NewRequest("POST", r.MailjetURL, bytes.NewReader(ppayload))
 	if err != nil {
 		return fmt.Errorf("repo.SendEmail: %w", err)
 	}

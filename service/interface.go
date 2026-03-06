@@ -18,7 +18,7 @@ type Service interface {
 	Register(user User) (User, error)
 	Login(email, password string) (string, error)
 	GetRents(userID int) ([]Rent, error)
-	RentBook(userID, bookID, duration int) (Rent, error)
+	RentBook(email string, userID, bookID, duration int) (Rent, error)
 	GetBooks() ([]Book, error)
 	AdminGetRentsReport() ([]User, error)
 	AdminGetAuthorsReport() ([]User, error)
