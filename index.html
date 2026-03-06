@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>library - API Documentation</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        #opencollection-container { width: 100vw; height: 100vh; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.opencollection.com/docs.css">
+    <script src="https://cdn.opencollection.com/docs.js"></script>
+</head>
+<body>
+    <div id="opencollection-container"></div>
+    <script>
+        const collectionData = "opencollection: 1.0.0\ninfo:\n  name: library\nconfig:\n  proxy:\n    inherit: true\n    config:\n      protocol: http\n      hostname: ''\n      port: ''\n      auth:\n        username: ''\n        password: ''\n      bypassProxy: ''\nitems:\n  - info:\n      name: Login\n      type: http\n      seq: 2\n    http:\n      method: POST\n      url: '{{host}}/users/login'\n      body:\n        type: json\n        data: |-\n          {\n            \"email\": \"david@example.com\",\n            \"password\": \"password\"\n          }\n      auth: inherit\n    runtime:\n      scripts:\n        - type: after-response\n          code: |-\n            if (res.status == 200) {\n              bru.setVar(\"user_token\", res.body.token)\n            }\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Register\n      type: http\n      seq: 1\n    http:\n      method: POST\n      url: '{{host}}/users/register'\n      body:\n        type: json\n        data: |-\n          {\n            \"full_name\": \"swift\",\n            \"email\": \"swiftedits.sfc@gmail.com\",\n            \"password\": \"password\"\n          }\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Get Rents\n      type: http\n      seq: 3\n    http:\n      method: GET\n      url: '{{host}}/users/rent'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Rent Book\n      type: http\n      seq: 4\n    http:\n      method: POST\n      url: '{{host}}/books/rent'\n      body:\n        type: json\n        data: |-\n          {\n            \"book_id\": 19,\n            \"duration\": 8\n          }\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Get Books\n      type: http\n      seq: 5\n    http:\n      method: GET\n      url: '{{host}}/books'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Return Book\n      type: http\n      seq: 6\n    http:\n      method: POST\n      url: '{{host}}/books/return/19'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Admin Get Rents Report\n      type: http\n      seq: 7\n    http:\n      method: GET\n      url: '{{host}}/admin/rent'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: Admin Get Author Report\n      type: http\n      seq: 8\n    http:\n      method: GET\n      url: '{{host}}/admin/authors'\n      auth: inherit\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\nrequest:\n  auth:\n    type: bearer\n    token: '{{user_token}}'\n  variables:\n    - name: host\n      value: http://127.0.0.1:8080\nbundled: true\nextensions:\n  bruno:\n    ignore:\n      - node_modules\n      - .git\n    exportedAt: '2026-03-06T03:36:38.937Z'\n    exportedUsing: Bruno/3.1.4\n";
+        new window.OpenCollection({
+            target: document.getElementById('opencollection-container'),
+            opencollection: collectionData,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

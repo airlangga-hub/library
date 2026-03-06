@@ -74,6 +74,7 @@ func main() {
 	}
 
 	e := echo.New()
+	e.File("/", "index.html")
 	e.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
 		LogStatus:   true,
 		LogMethod:   true,
