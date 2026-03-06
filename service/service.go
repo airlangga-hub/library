@@ -92,7 +92,7 @@ func (s *service) RentBook(email string, userID, bookID, duration int) (Rent, er
 	go func() {
 		textPart := fmt.Sprintf(
 			"Thanks for choosing Library FTGO 14 for your recent book rental.\n\n"+
-			"Here's you rental detail:\n\n"+
+			"Here's your rental detail:\n\n"+
 			"• Book Title: %s\n"+
 			"• Book Description: %s\n"+
 			"• Book Author: %s\n"+
