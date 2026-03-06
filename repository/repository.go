@@ -118,7 +118,7 @@ func (r *repository) CreateRent(userID, bookID int, createdAt, dueDate time.Time
 			return err
 		}
 
-		err = r.DB.
+		err = tx.
 			Joins("JOIN books ON books.id = rents.book_id AND rents.user_id = ?", userID).
 			Joins("JOIN categories ON categories.id = books.category_id").
 			Joins("JOIN users ON users.id = books.author_id").
