@@ -148,7 +148,7 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 			Joins("Book").
 			Joins("Book.Author").
 			Joins("Book.Category").
-			Where("user_id = ? AND book_id = ? AND return_date = ?", userID, bookID, time.Time{}).
+			Where("user_id = ? AND book_id = ? AND return_date IS NULL", userID, bookID).
 			First(&rent).
 			Error
 		if err != nil {
@@ -158,15 +158,16 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 		fine := 0
 		now := time.Now()
 		hoursLate := int(now.Sub(rent.DueDate).Hours())
+
 		if hoursLate >= 1 {
 			fine = 2000 * hoursLate
 		}
 
 		rent.Fine = fine
-		rent.ReturnDate = now
+		rent.ReturnDate = &now
 
 		res := tx.Model(&rent).
-			Updates(map[string]any{"fine": fine, "return_date": now})
+			Updates(map[string]any{"fine": fine, "return_date": now, "active": false})
 		if err := res.Error; err != nil {
 			return err
 		}
@@ -198,8 +199,9 @@ func (r *repository) ReturnBook(userID, bookID int) (service.Rent, error) {
 		BookCategory:    rent.Book.Category.Name,
 		RentDate:        rent.CreatedAt,
 		DueDate:         rent.DueDate,
-		ReturnDate:      &rent.ReturnDate,
+		ReturnDate:      rent.ReturnDate,
 		Fine:            rent.Fine,
+		Active:          rent.Active,
 	}, nil
 }
 

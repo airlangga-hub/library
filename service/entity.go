@@ -33,4 +33,5 @@ type Rent struct {
 	DueDate         time.Time  `json:"due_date"`
 	ReturnDate      *time.Time `json:"return_date,omitempty"`
 	Fine            int        `json:"fine,omitempty"`
+	Active          bool       `json:"active"`
 }
