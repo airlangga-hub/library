@@ -218,7 +218,7 @@ func (r *repository) GetBooks() ([]service.Book, error) {
 	err := r.DB.
 		Joins("JOIN users ON users.id = books.author_id").
 		Joins("JOIN categories ON categories.id = books.category_id").
-		Select(`books.id, books.title, books.description, users.full_name AS "Author__full_name", categories.name AS "Category__name"`).
+		Select(`books.id, books.title, books.description, books.available, users.full_name AS "Author__full_name", categories.name AS "Category__name"`).
 		Find(&books).
 		Error
 
