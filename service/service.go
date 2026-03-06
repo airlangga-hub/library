@@ -128,7 +128,7 @@ func (s *service) GetBooks() ([]Book, error) {
 	return books, nil
 }
 
-func (s *service) AdminGetRentsReport() ([]User, error) {
+func (s *service) AdminGetRentsReport() ([]UserRentReport, error) {
 	users, err := s.Repo.AdminGetRentsReport()
 	if err != nil {
 		return nil, fmt.Errorf("service.AdminGetRentsReport: %w", err)
@@ -136,7 +136,7 @@ func (s *service) AdminGetRentsReport() ([]User, error) {
 	return users, nil
 }
 
-func (s *service) AdminGetAuthorsReport() ([]User, error) {
+func (s *service) AdminGetAuthorsReport() ([]AuthorBookReport, error) {
 	users, err := s.Repo.AdminGetAuthorsReport()
 	if err != nil {
 		return nil, fmt.Errorf("service.AdminGetAuthorsReport: %w", err)

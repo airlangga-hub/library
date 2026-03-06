@@ -12,6 +12,18 @@ type User struct {
 	TotalBook int    `json:"total_book,omitempty"`
 }
 
+type UserRentReport struct {
+	FullName  string `json:"full_name"`
+	Email     string `json:"email"`
+	TotalRent int    `json:"total_rent"`
+}
+
+type AuthorBookReport struct {
+	FullName  string `json:"full_name"`
+	Email     string `json:"email"`
+	TotalBook int    `json:"total_book"`
+}
+
 type Category struct {
 	Name  string `json:"name,omitempty"`
 	Books []Book `json:"books,omitempty"`

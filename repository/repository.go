@@ -240,12 +240,12 @@ func (r *repository) GetBooks() ([]service.Book, error) {
 	return bbooks, nil
 }
 
-func (r *repository) AdminGetRentsReport() ([]service.User, error) {
+func (r *repository) AdminGetRentsReport() ([]service.UserRentReport, error) {
 	users := make([]User, 0, 16)
 
 	err := r.DB.
 		Model(&User{}).
-		Select("users.id, users.full_name, users.email, COUNT(rents.id) AS total_rent").
+		Select("users.full_name, users.email, COALESCE(COUNT(rents.id), 0) AS total_rent").
 		Joins("LEFT JOIN rents ON rents.user_id = users.id").
 		Group("users.id").
 		Order("total_rent DESC").
@@ -256,9 +256,9 @@ func (r *repository) AdminGetRentsReport() ([]service.User, error) {
 		return nil, fmt.Errorf("repo.AdminGetRentsReport: %w", err)
 	}
 
-	uusers := make([]service.User, len(users))
+	uusers := make([]service.UserRentReport, len(users))
 	for i, u := range users {
-		uusers[i] = service.User{
+		uusers[i] = service.UserRentReport{
 			FullName:  u.FullName,
 			Email:     u.Email,
 			TotalRent: u.TotalRent,
@@ -268,12 +268,12 @@ func (r *repository) AdminGetRentsReport() ([]service.User, error) {
 	return uusers, nil
 }
 
-func (r *repository) AdminGetAuthorsReport() ([]service.User, error) {
+func (r *repository) AdminGetAuthorsReport() ([]service.AuthorBookReport, error) {
 	users := make([]User, 0, 16)
 
 	err := r.DB.
-		Select("users.id, users.full_name, users.email, users.author, COUNT(books.id) AS total_book").
-		Joins("LEFT JOIN books ON books.author_id = users.id").
+		Select("users.full_name, users.email, COUNT(books.id) AS total_book").
+		Joins("JOIN books ON books.author_id = users.id").
 		Where("users.author = true").
 		Group("users.id").
 		Find(&users).
@@ -283,9 +283,9 @@ func (r *repository) AdminGetAuthorsReport() ([]service.User, error) {
 		return nil, fmt.Errorf("repo.AdminGetAuthorsReport: %w", err)
 	}
 
-	uusers := make([]service.User, len(users))
+	uusers := make([]service.AuthorBookReport, len(users))
 	for i, u := range users {
-		uusers[i] = service.User{
+		uusers[i] = service.AuthorBookReport{
 			FullName:  u.FullName,
 			Email:     u.Email,
 			TotalBook: u.TotalBook,
